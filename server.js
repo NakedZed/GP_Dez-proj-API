@@ -14,6 +14,7 @@ const profileRoutes = require("./routes/profile");
 //setting up express app
 const app = express();
 
+const port = process.env.PORT || 5000 //Configuring app to work remotly(Heroku) or locally
 //DB config.
 mongoose.Promise = global.Promise;
 mongoose.connect("mongodb://localhost/dzDB");
@@ -43,6 +44,6 @@ app.use((req, res, next) => {
     });
 });
 
-app.listen(5000, () => {
+app.listen(port, () => {
     console.log("we are now listening");
 });

@@ -10,6 +10,7 @@ const passport = require("passport");
 const carRoutes = require("./routes/car");
 const userRoutes = require("./routes/user");
 const profileRoutes = require("./routes/profile");
+// const db = require('./config/keys').mongoURI;
 
 //setting up express app
 const app = express();
@@ -17,7 +18,7 @@ const app = express();
 const port = process.env.PORT || 5000 //Configuring app to work remotly(Heroku) or locally
 //DB config.
 mongoose.Promise = global.Promise;
-mongoose.connect("mongodb://localhost/dzDB");
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/dzDB");
 
 //passport middleware
 app.use(passport.initialize());

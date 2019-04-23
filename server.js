@@ -30,21 +30,30 @@ app.use(passport.initialize());
 
 //Passport config
 require("./config/passport.js")(passport);
+app.use(function (req, res, next) {
 
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', 'https://afternoon-atoll-25236.herokuapp.com');
+
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
+    // Pass to next layer of middleware
+    next();
+});
 //body-parser middlewar
 app.use(
     bodyParser.urlencoded({
         extended: false
     })
 );
-app.use(cors({origin: 'https://afternoon-atoll-25236.herokuapp.com'}));
-app.use(cors({
-    'allowedHeaders': ['sessionId', 'Content-Type'],
-    'exposedHeaders': ['sessionId'],
-    'origin': 'https://afternoon-atoll-25236.herokuapp.com',
-    'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    'preflightContinue': false
-  }));
 
 
 app.use("/profile/cars", carRoutes); //Using carRoutes middleware( middleware - > code that runs between request and response)

@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+var cors = require('cors');
 const {
     ObjectID
 } = require("mongodb");
@@ -14,6 +15,9 @@ const profileRoutes = require("./routes/profile");
 
 //setting up express app
 const app = express();
+
+
+
 
 const port = process.env.PORT || 5000 //Configuring app to work remotly(Heroku) or locally
 //DB config.
@@ -52,6 +56,13 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
+app.use(cors({
+    'allowedHeaders': ['sessionId', 'Content-Type'],
+    'exposedHeaders': ['sessionId'],
+    'origin': '*',
+    'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    'preflightContinue': false
+  }));
 
 app.use("/profile/cars", carRoutes); //Using carRoutes middleware( middleware - > code that runs between request and response)
 app.use("/auth/users", userRoutes);

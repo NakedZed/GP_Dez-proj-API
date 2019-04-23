@@ -26,7 +26,14 @@ const upload = multer({
 //-------------------------------------------------------------------------------------------------------//
 
 //Getting all cars from database//
+router.get('/', function(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', 'https://afternoon-atoll-25236.herokuapp.com');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); // If needed
+  res.setHeader('Access-Control-Allow-Credentials', true); // If needed
 
+  res.send('cors problem fixed:)');
+});
 router.get("/", (req, res) => {
   Car.find()
     .then(car => {

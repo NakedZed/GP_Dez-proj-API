@@ -17,8 +17,8 @@ const storage = multer.diskStorage({
     cb(null, "./images");
   },
   filename: (req, file, cb) => {
-    const extension = file.mimetype.split("/")[1];
-    cb(null, file.fieldname + Date.now() + "." + extension);
+    const extension = file.mimetype.split("/")[1];//getting the extension(JPEG or JPG)
+    cb(null, file.fieldname + Date.now() + "." + extension); //field name is the name of the car(carImage)
   }
 });
 const upload = multer({
@@ -106,8 +106,7 @@ router.post(
     //     res.status(400).send(result.error.details[0].message)
     //     return
     //   }
-
-
+    
     carFields = {};
     carFields.user = req.user.id;
 
@@ -117,14 +116,14 @@ router.post(
     if (req.body.color) carFields.color = req.body.color;
     if (req.body.sellerPhone) carFields.sellerPhone = req.body.sellerPhone;
     if (req.body.year) carFields.year = req.body.year;
-    carFields.carImage = req.file.path;
+    carFields.carImage = "/images/" + req.file.filename
     if (req.body.review) carFields.review = req.body.review;
     if (req.body.carType) carFields.carType = req.body.carType;
     if (req.body.status) carFields.status = req.body.status;
     if (req.body.carStyle) carFields.carStyle = req.body.carStyle;
     if (req.body.price) carFields.price = req.body.price;
-    // console.log(req.file)
-
+    console.log(req.file)
+      
     Car.findOne({
       zipCode: carFields.zipCode
     }).then(car => {

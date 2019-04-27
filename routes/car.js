@@ -6,9 +6,11 @@ const {
 } = require("mongodb");
 const multer = require("multer");
 const passport = require("passport");
+const Joi = require('joi')
 //------------------------------------------------------------//
 const User = require("../models/User");
 const Car = require("../models/Car");
+const validationSchema = require('../models/Car')
 //----------------------------------------------------------------//
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -82,7 +84,7 @@ router.delete(
         res.send(car);
       })
       .catch(err => {
-        res.send(err.message);
+        res.send(err.message.split(','));
       });
   }
 );
@@ -99,20 +101,28 @@ router.post(
     //Get field
     zipCode = req.query;
 
-    carFields = {};
-    carFields.zipCode = req.body.zipCode;
-    carFields.make = req.body.make;
-    carFields.model = req.body.model;
-    carFields.color = req.body.color;
-    carFields.sellerPhone = req.body.sellerPhone;
-    carFields.year = req.body.year;
-    carFields.carImage = req.file.path;
-    carFields.review = req.body.review;
-    carFields.carType = req.body.carType;
-    carFields.status = req.body.status;
-    carFields.carStyle = req.body.carStyle;
-    carFields.price = req.body.price;
+    //  let result = Joi.validate(req.body, validationSchema)
+    //   if(result.error){
+    //     res.status(400).send(result.error.details[0].message)
+    //     return
+    //   }
 
+
+    carFields = {};
+    carFields.user = req.user.id;
+
+    if (req.body.make) carFields.make = req.body.make;
+    if (req.body.model) carFields.model = req.body.model;
+    if (req.body.zipCode) carFields.zipCode = req.body.zipCode;
+    if (req.body.color) carFields.color = req.body.color;
+    if (req.body.sellerPhone) carFields.sellerPhone = req.body.sellerPhone;
+    if (req.body.year) carFields.year = req.body.year;
+    if (req.body.carImage) carFields.carImage = req.file.path;
+    if (req.body.review) carFields.review = req.body.review;
+    if (req.body.carType) carFields.carType = req.body.carType;
+    if (req.body.status) carFields.status = req.body.status;
+    if (req.body.carStyle) carFields.carStyle = req.body.carStyle;
+    if (req.body.price) carFields.price = req.body.price;
 
     Car.findOne({
       zipCode: carFields.zipCode
@@ -123,7 +133,7 @@ router.post(
         new Car(carFields)
           .save()
           .then(car => res.json(car))
-          .catch(err => res.json(err));
+          .catch(err => res.json(err.message.split(',')));
       }
     });
   }
@@ -141,7 +151,7 @@ router.get("/Trends", (req, res) => {
       res.send(cars);
     })
     .catch(err => {
-      res.status(404).send(err);
+      res.status(404).send(err.message.split(','));
     });
 });
 
@@ -159,7 +169,7 @@ router.get("/search", (req, res) => {
       }
     })
     .catch(err => {
-      res.send(err);
+      res.send(err.message.split(','));
     });
 });
 

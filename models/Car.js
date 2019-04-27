@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Joi = require('joi')
 
 const carSchema = new Schema({
   make: {
@@ -13,11 +14,11 @@ const carSchema = new Schema({
   zipCode: {
     type: Number,
     required: true,
-    unique: true
+    
   },
   color: {
     type: String,
-   
+
   },
   review: {
     type: String,
@@ -29,34 +30,39 @@ const carSchema = new Schema({
   },
   price: {
     type: Number,
-    
+
   },
   sellerPhone: {
     type: Number,
-    
+
   },
   year: {
     type: Number,
-    
+
   },
   carImage: {
     type: String,
-    required: true
+
   },
   status: {
     type: String,
-    
+
   },
   carType: {
     type: String,
-    
+
   },
   carStyle: {
     type: String,
-    
+
   }
 });
 
+// const validationSchema = Joi.object().keys({
+//   make:Joi.string().min(3).trim().required(),
+//   carImage:Joi.string().required()
+// })
 const Car = mongoose.model("car", carSchema);
 
 module.exports = Car;
+// module.exports = validationSchema;

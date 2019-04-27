@@ -8,6 +8,7 @@ const {
 } = require("mongodb");
 const multer = require("multer");
 const passport = require("passport");
+const path = require('path')
 
 const carRoutes = require("./routes/car");
 const userRoutes = require("./routes/user");
@@ -59,7 +60,7 @@ app.use(function (req, res, next) {
 app.use("/profile/cars", carRoutes); //Using carRoutes middleware( middleware - > code that runs between request and response)
 app.use("/auth/users", userRoutes);
 app.use("/profile", profileRoutes);
-
+app.use('/images', express.static(path.join(__dirname, 'images')))
 // if the user entered route that doesnt exist
 app.use((req, res, next) => {
     res.status(404).json({

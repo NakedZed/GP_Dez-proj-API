@@ -42,18 +42,19 @@ const carSchema = new Schema({
   },
   carImage: {
     type: String,
+    required: true
 
   },
   status: {
-    type: String,
+    type: String
 
   },
   carType: {
-    type: String,
+    type: String
 
   },
   carStyle: {
-    type: String,
+    type: String
 
   }
 });

@@ -1,12 +1,25 @@
 const express = require("express");
+const bodyParser = require('body-parser')
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../config/keys");
 const passport = require("passport");
+const _ = require('lodash')
+
+
+
 
 //Load User Model
 const User = require("../models/User");
+
+var app = express();
+jsonParser = bodyParser.json()
+
+urlencodedParser = bodyParser.urlencoded({
+  extended: false
+})
+
 
 //@route GET auth/users
 
@@ -18,7 +31,7 @@ router.get("/test", (req, res) => {
 //@desc  Register user
 //@access Public
 
-router.post("/register", (req, res) => {
+router.post("/register", jsonParser, (req, res) => {
   User.findOne({
     email: req.body.email
   }).then(user => {
@@ -52,9 +65,14 @@ router.post("/register", (req, res) => {
 //@route GET auth/users/login
 //@desc  login user/Returning JWT(json web token)
 //@access Public
-router.post("/login", (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
+router.post("/login", jsonParser, (req, res) => {
+  console.log(req.body)
+
+  email = req.body.email
+  password = req.body.password
+
+
+  console.log(req.headers)
 
   //find user by email
   User.findOne({
@@ -66,6 +84,7 @@ router.post("/login", (req, res) => {
         email: "User is not found"
       });
     }
+
     //check Passowrd  @note-> the password that user type is plaintext but the password stored in the DB is hashed
     bcrypt.compare(password, user.password).then(isMatch => {
       if (isMatch) {

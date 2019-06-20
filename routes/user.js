@@ -51,7 +51,11 @@ router.post("/register", jsonParser, (req, res) => {
           newUser.password = hash;
           newUser
             .save()
-            .then(user => res.json(user))
+            .then(user => res.json({user:{
+            name:req.body.name,
+            email: req.body.email,
+            password:req.body.password}}
+            ))
             .catch(err => {
               console.log(err);
             });

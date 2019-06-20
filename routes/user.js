@@ -6,8 +6,7 @@ const jwt = require("jsonwebtoken");
 const keys = require("../config/keys");
 const passport = require("passport");
 const _ = require('lodash')
-
-
+const Car = require("../models/Car");
 
 
 //Load User Model
@@ -67,18 +66,19 @@ router.post("/register", jsonParser, (req, res) => {
 //@access Public
 router.post("/login", jsonParser, (req, res) => {
   console.log(req.body)
+  
+  
 
   email = req.body.email
   password = req.body.password
 
-
-  console.log(req.headers)
-
+ 
   //find user by email
   User.findOne({
     email: email
   }).then(user => {
     //check for user
+    
     if (!user) {
       return res.status(404).json({
         email: "User is not found"
@@ -94,6 +94,7 @@ router.post("/login", jsonParser, (req, res) => {
           id: user.id,
           name: user.name
         };
+        
         jwt.sign(
           payload,
           keys.secretOrKey, {
@@ -102,7 +103,13 @@ router.post("/login", jsonParser, (req, res) => {
           (err, token) => {
             res.json({
               success: true,
-              token: "Bearer " + token //for formatting
+              token: "Bearer " + token, //for formatting
+              user: {
+                name: user.name,
+                email: user.email,
+                id: user._id
+              }
+
             });
           }
         );

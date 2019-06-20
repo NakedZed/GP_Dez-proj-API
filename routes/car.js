@@ -174,4 +174,19 @@ router.get("/search", (req, res) => {
     });
 });
 
+
+//@route GET userAds
+//@desc getting all ads. assoisated to a specific user
+//@access private
+router.get("/userAds", passport.authenticate("jwt", {
+  session: false 
+}), (req, res) => {
+
+  user = req.user.id
+  console.log(user)
+  Car.find({
+    user
+  }).then(cars => res.send(cars)).catch(err => res.send(err))
+
+})
 module.exports = router;

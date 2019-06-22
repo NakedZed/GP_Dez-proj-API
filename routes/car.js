@@ -26,6 +26,13 @@ const upload = multer({
   storage: storage
 });
 
+jsonParser = bodyParser.json()
+
+urlencodedParser = bodyParser.urlencoded({
+  extended: false
+})
+
+
 //-------------------------------------------------------------------------------------------------------//
 
 //Getting all cars from database//
@@ -93,7 +100,7 @@ router.delete(
 //This router for creating cars for authenticated user
 
 router.post(
-  "/addCar",
+  "/addCar", jsonParser,
   upload.single("carImage"),
   passport.authenticate("jwt", {
     session: false
@@ -161,25 +168,28 @@ router.get("/search", (req, res) => {
   query = req.query;
 
   console.log(req.query);
+
   Car.find(query)
     .then(cars => {
       if (cars.length === 0) {
         res.status(404).send(`No matching cars`);
       } else {
-        res.send(cars);
+        res.send(cars)
       }
     })
     .catch(err => {
       res.send(err.message.split(','));
     });
-});
 
+
+
+});
 
 //@route GET userAds
 //@desc getting all ads. assoisated to a specific user
 //@access private
 router.get("/userAds", passport.authenticate("jwt", {
-  session: false 
+  session: false
 }), (req, res) => {
 
   user = req.user.id
@@ -189,4 +199,5 @@ router.get("/userAds", passport.authenticate("jwt", {
   }).then(cars => res.send(cars)).catch(err => res.send(err))
 
 })
+
 module.exports = router;

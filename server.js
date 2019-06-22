@@ -18,13 +18,14 @@ const profileRoutes = require("./routes/profile");
 //setting up express app
 const app = express();
 
-
-
-
 const port = process.env.PORT || 5000 //Configuring app to work remotly(Heroku) or locally
 //DB config.
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/dzDB");
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/dzDB", {
+    useNewUrlParser: true
+}, () => {
+    console.log('Connected to DB')
+});
 
 //passport middleware
 app.use(passport.initialize());

@@ -97,24 +97,15 @@ router.delete(
 //This router for creating cars for authenticated user
 
 router.post(
-  "/addCar",
+  "/addCar/:id",
   jsonParser,
   upload.single("carImage"),
-  passport.authenticate("jwt", {
-    session: false
-  }),
   (req, res) => {
     //Get field
     zipCode = req.query;
-
-    //  let result = Joi.validate(req.body, validationSchema)
-    //   if(result.error){
-    //     res.status(400).send(result.error.details[0].message)
-    //     return
-    //   }
-
     carFields = {};
-    carFields.user = req.user.id;
+    //carFields.user = req.user.id;
+    carFields.user = req.params.id;
 
     if (req.body.make) carFields.make = req.body.make;
     if (req.body.model) carFields.model = req.body.model;
@@ -220,8 +211,8 @@ router.get(
     user = req.user.id;
     console.log(user);
     Car.find({
-      user
-    })
+        user
+      })
       .then(cars => res.send(cars))
       .catch(err => res.send(err));
   }

@@ -1,17 +1,17 @@
 //this is cars route file.
 const express = require("express");
-const bodyParser = require('body-parser')
+const bodyParser = require("body-parser");
 const router = express.Router(); //router object for routing;
 const {
   ObjectID
 } = require("mongodb");
 const multer = require("multer");
 const passport = require("passport");
-const Joi = require('joi')
+const Joi = require("joi");
 //------------------------------------------------------------//
 const User = require("../models/User");
 const Car = require("../models/Car");
-const validationSchema = require('../models/Car')
+const validationSchema = require("../models/Car");
 //----------------------------------------------------------------//
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     // const extension = file.mimetype.split("/")[1];//getting the extension(JPEG or JPG)
-    const extension = file.originalname.split(".")[1]
+    const extension = file.originalname.split(".")[1];
     cb(null, file.fieldname + Date.now() + "." + extension); //field name is the name of the car(carImage)
   }
 });
@@ -27,12 +27,11 @@ const upload = multer({
   storage: storage
 });
 
-jsonParser = bodyParser.json()
+jsonParser = bodyParser.json();
 
 urlencodedParser = bodyParser.urlencoded({
   extended: false
-})
-
+});
 
 //-------------------------------------------------------------------------------------------------------//
 
@@ -52,11 +51,9 @@ router.put("/update/:id", (req, res) => {
   // carFields.make = req.body.make;
   const id = req.params.id;
 
-  Car.findById(
-      id
-    )
+  Car.findById(id)
     .then(car => {
-      if (req.body.make) car.make = req.body.make
+      if (req.body.make) car.make = req.body.make;
       if (req.body.model) car.model = req.body.model;
       if (req.body.color) car.color = req.body.color;
       if (req.body.review) car.review = req.body.review;
@@ -73,7 +70,6 @@ router.put("/update/:id", (req, res) => {
     .then(car => {
       res.send(car);
     });
-
 });
 //------------------------------------------------------------------------------------------------------//
 //Deleting speceific car;
@@ -93,7 +89,7 @@ router.delete(
         res.send(car);
       })
       .catch(err => {
-        res.send(err.message.split(','));
+        res.send(err.message.split(","));
       });
   }
 );
@@ -101,7 +97,8 @@ router.delete(
 //This router for creating cars for authenticated user
 
 router.post(
-  "/addCar", jsonParser,
+  "/addCar",
+  jsonParser,
   upload.single("carImage"),
   passport.authenticate("jwt", {
     session: false
@@ -125,13 +122,14 @@ router.post(
     if (req.body.color) carFields.color = req.body.color;
     if (req.body.sellerPhone) carFields.sellerPhone = req.body.sellerPhone;
     if (req.body.year) carFields.year = req.body.year;
-    carFields.carImage = "https://afternoon-atoll-25236.herokuapp.com/images/" + req.file.filename
+    carFields.carImage =
+      "https://afternoon-atoll-25236.herokuapp.com/images/" + req.file.filename;
     if (req.body.review) carFields.review = req.body.review;
     if (req.body.carType) carFields.carType = req.body.carType;
     if (req.body.status) carFields.status = req.body.status;
     if (req.body.carStyle) carFields.carStyle = req.body.carStyle;
     if (req.body.price) carFields.price = req.body.price;
-    console.log(req.file)
+    console.log(req.file);
 
     Car.findOne({
       zipCode: carFields.zipCode
@@ -142,7 +140,7 @@ router.post(
         new Car(carFields)
           .save()
           .then(car => res.json(car))
-          .catch(err => res.json(err.message.split(',')));
+          .catch(err => res.json(err.message.split(",")));
       }
     });
   }
@@ -160,11 +158,38 @@ router.get("/Trends", (req, res) => {
       res.send(cars);
     })
     .catch(err => {
-      res.status(404).send(err.message.split(','));
+      res.status(404).send(err.message.split(","));
     });
 });
 
-// Searching for any car in DB with matching specific criteria in the Query parameters
+// Searching for any car in DB with matching specific criteria in the Query parameters with min and max price
+router.get("/search/:min/:max", (req, res) => {
+  query = req.query;
+  min = req.params.min;
+  max = req.params.max;
+
+  console.log(req.query);
+
+  Car.find(query)
+    .then(cars => {
+        if (cars.length === 0) {
+          res.status(404).send(`No matching cars`);
+        } else {
+          const newCars = cars.filter(car => car.price > min && car.price < max)
+          res.send(newCars)
+        }
+
+      } //else{
+      //   res.send(cars)
+      // }
+    )
+    .catch(err => {
+      res.send(err.message.split(","));
+    });
+});
+
+//Route Search for cars
+//Its a PUBLIC route
 router.get("/search", (req, res) => {
   query = req.query;
 
@@ -175,30 +200,52 @@ router.get("/search", (req, res) => {
       if (cars.length === 0) {
         res.status(404).send(`No matching cars`);
       } else {
-        res.send(cars)
+        res.send(cars);
       }
     })
     .catch(err => {
-      res.send(err.message.split(','));
+      res.send(err.message.split(","));
     });
-
-
-
 });
 
 //@route GET userAds
 //@desc getting all ads. assoisated to a specific user
 //@access private
-router.get("/userAds", passport.authenticate("jwt", {
-  session: false
-}), (req, res) => {
+// router.get(
+//   "/userAds",
+//   passport.authenticate("jwt", {
+//     session: false
+//   }),
+//   (req, res) => {
+//     user = req.user.id;
+//     console.log(user);
+//     Car.find({
+//       user
+//     })
+//       .then(cars => res.send(cars))
+//       .catch(err => res.send(err));
+//   }
+// );
 
-  user = req.user.id
-  console.log(user)
-  Car.find({
-    user
-  }).then(cars => res.send(cars)).catch(err => res.send(err))
 
-})
+//@route GET userAds
+//@desc getting all ads. assoisated to a specific user
+//@access private
+router.get(
+  "/userAds/:id",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  (req, res) => {
+    user = req.params.id;
+    console.log(user);
+    Car.find({
+        user
+      })
+      .then(cars => res.send(cars))
+      .catch(err => res.send(err));
+  }
+);
+
 
 module.exports = router;

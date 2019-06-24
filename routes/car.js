@@ -97,7 +97,7 @@ router.delete(
 //This router for creating cars for authenticated user
 
 router.post(
-  "/addCar/:id",
+  "/addCar/:id", jsonParser,
   upload.single("carImage"),
   (req, res) => {
     //Get field
@@ -112,8 +112,8 @@ router.post(
     if (req.body.color) carFields.color = req.body.color;
     if (req.body.sellerPhone) carFields.sellerPhone = req.body.sellerPhone;
     if (req.body.year) carFields.year = req.body.year;
-    carFields.carImage =
-      "https://afternoon-atoll-25236.herokuapp.com/images/" + req.file.filename;
+    // carFields.carImage =
+    //   "https://afternoon-atoll-25236.herokuapp.com/images/" + req.file.filename;
     if (req.body.review) carFields.review = req.body.review;
     if (req.body.carType) carFields.carType = req.body.carType;
     if (req.body.status) carFields.status = req.body.status;

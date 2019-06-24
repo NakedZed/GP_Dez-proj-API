@@ -76,9 +76,6 @@ router.put("/update/:id", (req, res) => {
 
 router.delete(
   "/:id",
-  passport.authenticate("jwt", {
-    session: false
-  }),
   (req, res) => {
     id = req.params.id;
 

@@ -98,7 +98,6 @@ router.delete(
 
 router.post(
   "/addCar/:id",
-  jsonParser,
   upload.single("carImage"),
   (req, res) => {
     //Get field
@@ -198,6 +197,8 @@ router.get("/search", (req, res) => {
       res.send(err.message.split(","));
     });
 });
+
+
 
 // @route GET userAds
 // @desc getting all ads. assoisated to a specific user

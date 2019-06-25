@@ -36,7 +36,7 @@ urlencodedParser = bodyParser.urlencoded({
 //-------------------------------------------------------------------------------------------------------//
 
 //Getting all cars from database//
-router.get("/", (req, res) => {
+router.get("/",jsonParser, (req, res) => {
   Car.find()
     .then(car => {
       res.send(car);
@@ -99,6 +99,7 @@ router.post(
   (req, res) => {
     //Get field
     zipCode = req.query;
+    
     carFields = {};
     //carFields.user = req.user.id;
     carFields.user = req.params.id;
@@ -116,7 +117,9 @@ router.post(
     if (req.body.status) carFields.status = req.body.status;
     if (req.body.carStyle) carFields.carStyle = req.body.carStyle;
     if (req.body.price) carFields.price = req.body.price;
-    console.log(req.file);
+    //console.log(req.file);
+
+    console.log(zipCode)
 
     Car.findOne({
       zipCode: carFields.zipCode
@@ -232,6 +235,4 @@ router.get(
       .catch(err => res.send(err));
   }
 );
-
-
 module.exports = router;

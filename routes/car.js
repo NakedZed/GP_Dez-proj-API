@@ -36,7 +36,7 @@ urlencodedParser = bodyParser.urlencoded({
 //-------------------------------------------------------------------------------------------------------//
 
 //Getting all cars from database//
-router.get("/",jsonParser, (req, res) => {
+router.get("/", (req, res) => {
   Car.find()
     .then(car => {
       res.send(car);
@@ -46,7 +46,7 @@ router.get("/",jsonParser, (req, res) => {
     });
 });
 
-router.put("/update/:id", (req, res) => {
+router.put("/update/:id",jsonParser, (req, res) => {
   carFields = {};
   // carFields.make = req.body.make;
   const id = req.params.id;

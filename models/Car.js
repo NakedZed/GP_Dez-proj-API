@@ -41,8 +41,10 @@ const carSchema = new Schema({
 
   },
   carImage: {
-    type: String,
-
+    // data: Buffer,
+    // contentType:String
+    type:String
+    
   },
   status: {
     type: String

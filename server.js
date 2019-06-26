@@ -27,6 +27,11 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/dzDB", {
     console.log('Connected to DB')
 });
 
+//////////////////////////
+//CORS middleware
+app.use(cors())
+// app.use('/picture/uploads', express.static(__dirname + '/uploads'));
+
 //passport middleware
 app.use(passport.initialize());
 

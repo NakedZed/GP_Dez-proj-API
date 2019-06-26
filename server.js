@@ -30,7 +30,7 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/dzDB", {
 //////////////////////////
 //CORS middleware
 app.use(cors())
-// app.use('/picture/uploads', express.static(__dirname + '/uploads'));
+
 
 //passport middleware
 app.use(passport.initialize());
@@ -66,7 +66,8 @@ app.use(function (req, res, next) {
 app.use("/profile/cars", carRoutes); //Using carRoutes middleware( middleware - > code that runs between request and response)
 app.use("/auth/users", userRoutes);
 app.use("/profile", profileRoutes);
-app.use('/images', express.static(path.join(__dirname, 'images')))
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
+app.use('/uploads', express.static('uploads'))
 // if the user entered route that doesnt exist
 app.use((req, res, next) => {
     res.status(404).json({

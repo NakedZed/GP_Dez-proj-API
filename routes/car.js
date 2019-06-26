@@ -119,9 +119,6 @@ router.post(
     file = req.file
     console.log(file)
 
-
-
-
     carFields = {};
     //carFields.user = req.user.id;
     carFields.user = req.params.id;
@@ -132,7 +129,7 @@ router.post(
     if (req.body.color) carFields.color = req.body.color;
     if (req.body.sellerPhone) carFields.sellerPhone = req.body.sellerPhone;
     if (req.body.year) carFields.year = req.body.year;
-    carFields.carImage = "https://afternoon-atoll-25236.herokuapp.com/uploads/" + req.file.filename;
+     carFields.carImage = "https://afternoon-atoll-25236.herokuapp.com/" + req.file.path;
     if (req.body.review) carFields.review = req.body.review;
     if (req.body.carType) carFields.carType = req.body.carType;
     if (req.body.status) carFields.status = req.body.status;

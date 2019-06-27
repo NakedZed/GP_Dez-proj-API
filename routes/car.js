@@ -2,12 +2,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const router = express.Router(); //router object for routing;
-const {
-  ObjectID
-} = require("mongodb");
-const fs = require('fs')
+const { ObjectID } = require("mongodb");
+const fs = require("fs");
 const multer = require("multer");
-const cors = require('cors')
+const cors = require("cors");
 const passport = require("passport");
 const Joi = require("joi");
 //------------------------------------------------------------//
@@ -30,18 +28,17 @@ const validationSchema = require("../models/Car");
 // });
 ////////////////////////////////////////////////
 var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/')
+  destination: function(req, file, cb) {
+    cb(null, "uploads/");
   },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname)
+  filename: function(req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
   }
-})
-
+});
 
 var upload = multer({
   storage: storage
-})
+});
 /////////////////////////////////////////////////////////
 jsonParser = bodyParser.json();
 
@@ -90,34 +87,32 @@ router.put("/update/:id", jsonParser, (req, res) => {
 //------------------------------------------------------------------------------------------------------//
 //Deleting speceific car;
 
-router.delete(
-  "/:id",
-  (req, res) => {
-    id = req.params.id;
+router.delete("/:id", (req, res) => {
+  id = req.params.id;
 
-    Car.findOneAndRemove({
-        _id: id
-      })
-      .then(car => {
-        res.send(car);
-      })
-      .catch(err => {
-        res.send(err.message.split(","));
-      });
-  }
-);
+  Car.findOneAndRemove({
+    _id: id
+  })
+    .then(car => {
+      res.send(car);
+    })
+    .catch(err => {
+      res.send(err.message.split(","));
+    });
+});
 //////////////////////////////////////////////////////////////////////////////////////////////
 //This router for creating cars for authenticated user
 
 router.post(
-  "/addCar/:id", jsonParser,
-  upload.single('carImage'),
+  "/addCar/:id",
+  jsonParser,
+  upload.single("carImage"),
   (req, res) => {
     //Get field
 
     zipCode = req.query;
-    file = req.file
-    console.log(file)
+    file = req.file;
+    console.log(file);
 
     carFields = {};
     //carFields.user = req.user.id;
@@ -129,13 +124,13 @@ router.post(
     if (req.body.color) carFields.color = req.body.color;
     if (req.body.sellerPhone) carFields.sellerPhone = req.body.sellerPhone;
     if (req.body.year) carFields.year = req.body.year;
-     carFields.carImage = "https://afternoon-atoll-25236.herokuapp.com/" + req.file.path;
+    carFields.carImage =
+      "https://afternoon-atoll-25236.herokuapp.com/" + req.file.path;
     if (req.body.review) carFields.review = req.body.review;
     if (req.body.carType) carFields.carType = req.body.carType;
     if (req.body.status) carFields.status = req.body.status;
     if (req.body.carStyle) carFields.carStyle = req.body.carStyle;
     if (req.body.price) carFields.price = req.body.price;
-
 
     Car.findOne({
       zipCode: carFields.zipCode
@@ -158,8 +153,8 @@ router.post(
 //@access public
 router.get("/Trends", (req, res) => {
   Car.find({
-      year: 2019
-    })
+    year: 2019
+  })
     .then(cars => {
       res.send(cars);
     })
@@ -177,14 +172,16 @@ router.get("/search/:min/:max", (req, res) => {
   console.log(req.query);
 
   Car.find(query)
-    .then(cars => {
+    .then(
+      cars => {
         if (cars.length === 0) {
           res.status(404).send(`No matching cars`);
         } else {
-          const newCars = cars.filter(car => car.price > min && car.price < max)
-          res.send(newCars)
+          const newCars = cars.filter(
+            car => car.price > min && car.price < max
+          );
+          res.send(newCars);
         }
-
       } //else{
       //   res.send(cars)
       // }
@@ -214,8 +211,6 @@ router.get("/search", (req, res) => {
     });
 });
 
-
-
 // @route GET userAds
 // @desc getting all ads. assoisated to a specific user
 // @access private
@@ -228,57 +223,47 @@ router.get(
     user = req.user.id;
     console.log(user);
     Car.find({
-        user
-      })
+      user
+    })
       .then(cars => res.send(cars))
       .catch(err => res.send(err));
   }
 );
-
 
 // @route GET userAds
 // @desc getting all ads. assoisated to a specific user
 // @access private
-router.get(
-  "/userAds/:id",
-  (req, res) => {
-    user = req.params.id;
-    console.log(user);
-    Car.find({
-        user
-      })
-      .then(cars => res.send(cars))
-      .catch(err => res.send(err));
-  }
-);
+router.get("/userAds/:id", (req, res) => {
+  user = req.params.id;
+  console.log(user);
+  Car.find({
+    user
+  })
+    .then(cars => res.send(cars))
+    .catch(err => res.send(err));
+});
 
 // @route GET sepcific car
 // @desc getting a specific car assoisated to a specific carID
 // @access public
 
-router.get(
-  "/specific/:id",
-  (req, res) => {
-    id = req.params.id;
-    console.log(id);
-    Car.find({
-        _id: id
-      })
-      .then(cars => res.send(cars))
-      .catch(err => res.send(err));
-  }
-);
+router.get("/specific/:id", (req, res) => {
+  id = req.params.id;
+  console.log(id);
+  Car.find({
+    _id: id
+  })
+    .then(cars => res.send(cars))
+    .catch(err => res.send(err));
+});
 
-
-// @route POST 
+// @route POST
 // @desc posting and and find the matched cars for the posted criteria
 // @access public
-router.post('/find', jsonParser, (req, res) => {
-
+router.post("/find", jsonParser, (req, res) => {
   min = req.body.min;
   max = req.body.max;
-  carFields = {}
-
+  carFields = {};
 
   if (req.body.make) carFields.make = req.body.make;
   if (req.body.model) carFields.model = req.body.model;
@@ -288,7 +273,7 @@ router.post('/find', jsonParser, (req, res) => {
   if (req.body.carStyle) carFields.carStyle = req.body.carStyle;
   if (req.body.price) carFields.price = req.body.price;
 
-  console.log(carFields)
+  console.log(carFields);
 
   //Car.find(carFields).then(cars => res.send(cars)).catch(err => res.send(err.message.split(',')))
 
@@ -299,32 +284,40 @@ router.post('/find', jsonParser, (req, res) => {
       } else if (!max && !min) {
         res.send(cars);
       } else {
-        const newCars = cars.filter(car => car.price > min && car.price < max)
+        const newCars = cars.filter(car => car.price > min && car.price < max);
         if (newCars.length == 0) {
-          return res.send('No cars in this Price Range')
+          return res.send("No cars in this Price Range");
         }
 
-        res.send(newCars)
-
+        res.send(newCars);
       }
     })
     .catch(err => {
       res.send(err.message.split(","));
     });
-})
-
+});
 
 // @route GET top car
 // @desc getting top 2 trendy cars to view them in home page
 // @access public
-router.get('/topCars', (req, res) => {
+router.get("/topCars", (req, res) => {
   Car.find({
-      year: 2019
-    }).limit(2)
+    year: 2019
+  })
+    .limit(2)
     .then(cars => res.send(cars))
-    .catch(err => res.send(err.message.split(',')))
-})
+    .catch(err => res.send(err.message.split(",")));
+});
 
-
+router.post("/upload", jsonParser, upload.single('carImage'), function(req, res) {
+  upload(req, res, function(err) {
+    if (err instanceof multer.MulterError) {
+      return res.status(500).json(err);
+    } else if (err) {
+      return res.status(500).json(err);
+    }
+    return res.status(200).send(req.file);
+  });
+});
 
 module.exports = router;

@@ -38,7 +38,7 @@ var storage = multer.diskStorage({
 
 var upload = multer({
   storage: storage
-});
+}).single('carImage');
 /////////////////////////////////////////////////////////
 jsonParser = bodyParser.json();
 
@@ -103,49 +103,49 @@ router.delete("/:id", (req, res) => {
 //////////////////////////////////////////////////////////////////////////////////////////////
 //This router for creating cars for authenticated user
 
-router.post(
-  "/addCar/:id",
-  jsonParser,
-  upload.single("carImage"),
-  (req, res) => {
-    //Get field
+// router.post(
+//   "/addCar/:id",
+//   jsonParser,
+//   upload.single("carImage"),
+//   (req, res) => {
+//     //Get field
 
-    zipCode = req.query;
-    file = req.file;
-    console.log(file);
+//     zipCode = req.query;
+//     file = req.file;
+//     console.log(file);
 
-    carFields = {};
-    //carFields.user = req.user.id;
-    carFields.user = req.params.id;
+//     carFields = {};
+//     //carFields.user = req.user.id;
+//     carFields.user = req.params.id;
 
-    if (req.body.make) carFields.make = req.body.make;
-    if (req.body.model) carFields.model = req.body.model;
-    if (req.body.zipCode) carFields.zipCode = req.body.zipCode;
-    if (req.body.color) carFields.color = req.body.color;
-    if (req.body.sellerPhone) carFields.sellerPhone = req.body.sellerPhone;
-    if (req.body.year) carFields.year = req.body.year;
-    carFields.carImage =
-      "https://afternoon-atoll-25236.herokuapp.com/" + req.file.path;
-    if (req.body.review) carFields.review = req.body.review;
-    if (req.body.carType) carFields.carType = req.body.carType;
-    if (req.body.status) carFields.status = req.body.status;
-    if (req.body.carStyle) carFields.carStyle = req.body.carStyle;
-    if (req.body.price) carFields.price = req.body.price;
+//     if (req.body.make) carFields.make = req.body.make;
+//     if (req.body.model) carFields.model = req.body.model;
+//     if (req.body.zipCode) carFields.zipCode = req.body.zipCode;
+//     if (req.body.color) carFields.color = req.body.color;
+//     if (req.body.sellerPhone) carFields.sellerPhone = req.body.sellerPhone;
+//     if (req.body.year) carFields.year = req.body.year;
+//     carFields.carImage =
+//       "https://afternoon-atoll-25236.herokuapp.com/" + req.file.path;
+//     if (req.body.review) carFields.review = req.body.review;
+//     if (req.body.carType) carFields.carType = req.body.carType;
+//     if (req.body.status) carFields.status = req.body.status;
+//     if (req.body.carStyle) carFields.carStyle = req.body.carStyle;
+//     if (req.body.price) carFields.price = req.body.price;
 
-    Car.findOne({
-      zipCode: carFields.zipCode
-    }).then(car => {
-      if (car) {
-        res.status(400).json("That car already exists");
-      } else {
-        new Car(carFields)
-          .save()
-          .then(car => res.json(car))
-          .catch(err => res.json(err.message.split(",")));
-      }
-    });
-  }
-);
+//     Car.findOne({
+//       zipCode: carFields.zipCode
+//     }).then(car => {
+//       if (car) {
+//         res.status(400).json("That car already exists");
+//       } else {
+//         new Car(carFields)
+//           .save()
+//           .then(car => res.json(car))
+//           .catch(err => res.json(err.message.split(",")));
+//       }
+//     });
+//   }
+// );
 //---------------------------------------------------------------------//
 
 //@route GET Trendycars
@@ -309,7 +309,7 @@ router.get("/topCars", (req, res) => {
     .catch(err => res.send(err.message.split(",")));
 });
 
-router.post("/upload", jsonParser, upload.single('carImage'), function(req, res) {
+router.post("/upload", function(req, res) {
   upload(req, res, function(err) {
     if (err instanceof multer.MulterError) {
       return res.status(500).json(err);

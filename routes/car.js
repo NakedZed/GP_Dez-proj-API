@@ -38,7 +38,7 @@ var storage = multer.diskStorage({
 
 var upload = multer({
   storage: storage
-})
+});
 /////////////////////////////////////////////////////////
 jsonParser = bodyParser.json();
 
@@ -319,5 +319,30 @@ router.get("/topCars", (req, res) => {
 //     return res.status(200).send(req.file);
 //   });
 // });
+
+router.get("/makes", (req, res) => {
+  Car.find()
+    .then(cars => {
+      const distinctMakes = [...new Set(cars.map(x => x.make))];
+      res.send(distinctMakes);
+    })
+    .catch(err => res.send(err));
+});
+router.get("/models/:make", (req, res) => {
+  make = req.params.make;
+
+  Car.find()
+    .then(cars => {
+      cars.forEach(car => {
+        if (car.make === make) {
+          res.send([car.model])
+        }else{
+          res.send('no matching models for this make')
+        }
+          
+      })
+    }).catch(err => res.send(err.message.split(',')))
+    
+});
 
 module.exports = router;

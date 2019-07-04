@@ -336,10 +336,7 @@ router.get("/models/:make", (req, res) => {
       cars.forEach(car => {
         if (car.make === make) {
           res.send([car.model])
-        }else{
-          res.send('no matching models for this make')
-        }
-          
+        }  
       })
     }).catch(err => res.send(err.message.split(',')))
     

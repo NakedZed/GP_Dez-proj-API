@@ -2,7 +2,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const router = express.Router(); //router object for routing;
-const { ObjectID } = require("mongodb");
+const {
+  ObjectID
+} = require("mongodb");
 const fs = require("fs");
 const multer = require("multer");
 const cors = require("cors");
@@ -28,10 +30,10 @@ const validationSchema = require("../models/Car");
 // });
 ////////////////////////////////////////////////
 var storage = multer.diskStorage({
-  destination: function(req, file, cb) {
+  destination: function (req, file, cb) {
     cb(null, "uploads/");
   },
-  filename: function(req, file, cb) {
+  filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
   }
 });
@@ -59,7 +61,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.put("/update/:id", jsonParser, (req, res) => {
+router.put("/update/:id", jsonParser, upload.single("carImage"), (req, res) => {
   carFields = {};
   // carFields.make = req.body.make;
   const id = req.params.id;
@@ -78,6 +80,12 @@ router.put("/update/:id", jsonParser, (req, res) => {
       if (req.body.carImage) car.carImage = req.file.path;
       if (req.body.carStyle) car.carStyle = req.body.carStyle;
       if (req.body.price) car.price = req.body.price;
+      if (req.body.transmission) car.transmission = req.body.transmission;
+      if (req.body.extColor) car.extColor = req.body.extColor;
+      if (req.body.intColor) car.intColor = req.body.intColor;
+      if (req.body.numberOfDoors) car.numberOfDoors = req.body.numberOfDoors;
+      if (req.body.mileage) car.mileage = req.body.mileage;
+      if (req.body.fuelType) car.fuelType = req.body.fuelType;
       return car.save();
     })
     .then(car => {
@@ -91,8 +99,8 @@ router.delete("/:id", (req, res) => {
   id = req.params.id;
 
   Car.findOneAndRemove({
-    _id: id
-  })
+      _id: id
+    })
     .then(car => {
       res.send(car);
     })
@@ -131,6 +139,15 @@ router.post(
     if (req.body.status) carFields.status = req.body.status;
     if (req.body.carStyle) carFields.carStyle = req.body.carStyle;
     if (req.body.price) carFields.price = req.body.price;
+    if (req.body.transmission) carFields.transmission = req.body.transmission;
+    if (req.body.extColor) carFields.extColor = req.body.extColor;
+    if (req.body.intColor) carFields.intColor = req.body.intColor;
+    if (req.body.numberOfDoors) carFields.numberOfDoors = req.body.numberOfDoors;
+    if (req.body.mileage) carFields.mileage = req.body.mileage;
+    if (req.body.fuelType) carFields.fuelType = req.body.fuelType;
+
+
+
 
     Car.findOne({
       zipCode: carFields.zipCode
@@ -153,8 +170,8 @@ router.post(
 //@access public
 router.get("/Trends", (req, res) => {
   Car.find({
-    year: 2019
-  })
+      year: 2019
+    })
     .then(cars => {
       res.send(cars);
     })
@@ -223,8 +240,8 @@ router.get(
     user = req.user.id;
     console.log(user);
     Car.find({
-      user
-    })
+        user
+      })
       .then(cars => res.send(cars))
       .catch(err => res.send(err));
   }
@@ -237,8 +254,8 @@ router.get("/userAds/:id", (req, res) => {
   user = req.params.id;
   console.log(user);
   Car.find({
-    user
-  })
+      user
+    })
     .then(cars => res.send(cars))
     .catch(err => res.send(err));
 });
@@ -251,8 +268,8 @@ router.get("/specific/:id", (req, res) => {
   id = req.params.id;
   console.log(id);
   Car.find({
-    _id: id
-  })
+      _id: id
+    })
     .then(cars => res.send(cars))
     .catch(err => res.send(err));
 });
@@ -302,23 +319,13 @@ router.post("/find", jsonParser, (req, res) => {
 // @access public
 router.get("/topCars", (req, res) => {
   Car.find({
-    year: 2019
-  })
+      year: 2019
+    })
     .limit(2)
     .then(cars => res.send(cars))
     .catch(err => res.send(err.message.split(",")));
 });
 
-// router.post("/upload", function(req, res) {
-//   upload(req, res, function(err) {
-//     if (err instanceof multer.MulterError) {
-//       return res.status(500).json(err);
-//     } else if (err) {
-//       return res.status(500).json(err);
-//     }
-//     return res.status(200).send(req.file);
-//   });
-// });
 
 router.get("/makes", (req, res) => {
   Car.find()
@@ -336,10 +343,11 @@ router.get("/models/:make", (req, res) => {
       cars.forEach(car => {
         if (car.make === make) {
           res.send([car.model])
-        }  
+        }
       })
     }).catch(err => res.send(err.message.split(',')))
-    
+
 });
+
 
 module.exports = router;

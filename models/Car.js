@@ -20,7 +20,7 @@ const carSchema = new Schema({
     type: String,
 
   },
-  review: {
+  description: {
     type: String,
 
   },
@@ -57,7 +57,26 @@ const carSchema = new Schema({
   carStyle: {
     type: String
 
+  },
+  extColor: {
+    type:String
+  },
+  intColor: {
+    type:String
+  },
+  transmission:{
+    type:String
+  },
+  numberOfDoors:{
+    type:Number
+  },
+  mileage:{
+    type:Number
+  },
+  fuelType:{
+    type:String
   }
+
 });
 
 // const validationSchema = Joi.object().keys({

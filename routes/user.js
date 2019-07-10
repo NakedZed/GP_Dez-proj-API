@@ -138,4 +138,19 @@ router.get(
   }
 );
 
+//@desc Getting user info by ID
+//@access PUBLIC
+router.get("/:userId", (req, res) => {
+
+  userId = req.params.userId
+  User.find({
+   _id: userId
+  })
+    .then(user => {
+      res.send(user);
+    })
+    .catch(err => {
+      res.status(404).send(err.message.split(","));
+    });
+});
 module.exports = router;
